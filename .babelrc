@@ -1,0 +1,32 @@
+{
+  "presets": [
+    "react",
+    "@salesforce/babel-preset-design-system-react",
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            ">0.25%",
+            "not ie 11",
+            "not op_mini all"
+          ],
+          "node": "current"
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    "dynamic-import-webpack",
+    "syntax-dynamic-import",
+    "transform-class-properties"
+  ],
+  "env": {
+    "test": {
+      "plugins": ["dynamic-import-node"]
+    },
+    "production": {
+      "presets": ["minify"]
+    }
+  }
+}
