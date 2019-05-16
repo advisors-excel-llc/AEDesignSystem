@@ -1,23 +1,39 @@
 const webpack = require('webpack')
+const nodeExternals = require('webpack-node-externals')
 const MiniExtractCssPlugin = require('mini-css-extract-plugin')
+const WebpackWatchedGlobEntries = require('webpack-watched-glob-entries-plugin');
 const path = require('path')
+const entries = function () {
+  const files = WebpackWatchedGlobEntries.getEntries(
+    [
+      path.resolve(__dirname, 'src/**/*.jsx'),
+      path.resolve(__dirname, 'src/**/*(!.test.).js')
+    ],
+    {
+    ignore: '**/__tests__/*'
+  })()
+  files.index = Object.keys(files)
+
+  return files
+}
 
 module.exports = {
   mode: 'production',
-  devtool: 'source-map',
-  entry: {
-    index: ['babel-polyfill', path.resolve(__dirname, 'lib/index.js')]
-  },
+  entry: entries,
   output: {
-    path: path.resolve(__dirname),
+    path: path.resolve(__dirname, 'lib'),
     publicPath: '/',
-    filename: '[name].js'
+    filename: '[name].js',
+    library: 'aeDesignSystem',
+    libraryTarget: 'commonjs2',
   },
+  externals: [nodeExternals()],
   resolve: {
     extensions: ['.js', '.jsx'],
-    modules: ['node_modules', path.resolve(__dirname, 'lib')]
+    modules: ['node_modules', path.resolve(__dirname, 'src')]
   },
   plugins: [
+    new WebpackWatchedGlobEntries(),
     new MiniExtractCssPlugin({
       filename: '[name].css',
     }),

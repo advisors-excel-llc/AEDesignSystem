@@ -1,10 +1,10 @@
 {
   "presets": [
-    "react",
-    "@salesforce/babel-preset-design-system-react",
+    "@babel/preset-react",
     [
-      "env",
+      "@babel/preset-env",
       {
+        "useBuiltIns": "entry",
         "targets": {
           "browsers": [
             ">0.25%",
@@ -17,14 +17,13 @@
     ]
   ],
   "plugins": [
-    "dynamic-import-webpack",
-    "syntax-dynamic-import",
-    "transform-class-properties"
+    "@babel/plugin-syntax-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-export-namespace-from",
+    "@babel/plugin-proposal-throw-expressions",
+    "@babel/plugin-syntax-dynamic-import"
   ],
   "env": {
-    "test": {
-      "plugins": ["dynamic-import-node"]
-    },
     "production": {
       "presets": ["minify"]
     }

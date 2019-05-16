@@ -1,0 +1,22 @@
+$fieldset-border: none !default;
+$fieldset-legend-bg-color: #DDD !default;
+$fieldset-legend-fg-color: #595959 !default;
+$fieldset-legend-padding: 10px !default;
+$fieldset-legend-margin: 10px !default;
+$fieldset-legend-font-size: 12pt !default;
+$fieldset-legend-border-radius: 5px !default;
+$fieldset-legend-width: calc(100% - 20px) !default;
+
+fieldset.ae-fieldset {
+  border: $fieldset-border;
+
+  & > legend {
+    padding: $fieldset-legend-padding;
+    margin: $fieldset-legend-margin;
+    background-color: $fieldset-legend-bg-color;
+    color: $fieldset-legend-fg-color;
+    font-size: $fieldset-legend-font-size;
+    width: $fieldset-legend-width;
+    border-radius: $fieldset-legend-border-radius;
+  }
+}

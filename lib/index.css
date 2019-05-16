@@ -1,0 +1,11 @@
+fieldset.ae-fieldset {
+  border: none; }
+  fieldset.ae-fieldset > legend {
+    padding: 10px;
+    margin: 10px;
+    background-color: #DDD;
+    color: #595959;
+    font-size: 12pt;
+    width: calc(100% - 20px);
+    border-radius: 5px; }
+

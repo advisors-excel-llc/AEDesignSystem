@@ -6,12 +6,13 @@ import Modal from '@salesforce/design-system-react/lib/components/modal';
 class Confirm extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
-    content: PropTypes.string.isRequired,
+    children: PropTypes.node,
     okLabel: PropTypes.string,
     cancelLabel: PropTypes.string,
     variant: PropTypes.oneOf(['success', 'warning', 'error', 'wrench', 'offline', 'info']),
     onOk: PropTypes.func,
-    onCancel: PropTypes.func
+    onCancel: PropTypes.func,
+    size: PropTypes.oneOf(['medium', 'large'])
   }
 
   static defaultProps = {
@@ -19,7 +20,8 @@ class Confirm extends React.Component {
     cancelLabel: 'Cancel',
     variant: 'info',
     onOk: () => {},
-    onCancel: () => {}
+    onCancel: () => {},
+    size: 'medium',
   }
 
   state = {
@@ -29,8 +31,15 @@ class Confirm extends React.Component {
   constructor (props) {
     super(props);
     this.toggleOpen = this.toggleOpen.bind(this);
+    this.show = this.show.bind(this)
     this.confirmCancel = this.confirmCancel.bind(this);
     this.confirmOk = this.confirmOk.bind(this);
+  }
+
+  show() {
+    this.setState({
+      isOpen: true
+    })
   }
 
   toggleOpen() {
@@ -50,29 +59,31 @@ class Confirm extends React.Component {
   }
 
   render() {
+    const {title, cancelLabel, okLabel, variant, size, children} = this.props
     return <Modal
       dismissible={false}
-      title={(<span>{this.props.title}</span>)}
+      dismissOnClickOutside={false}
+      title={(<span>{title}</span>)}
       footer={[
         <Button
           key="cancelBtn"
-          label={this.props.cancelLabel}
+          label={cancelLabel}
           onClick={this.confirmCancel}
         />,
         <Button
           key="okBtn"
           variant="brand"
-          label={this.props.okLabel}
+          label={okLabel}
           onClick={this.confirmOk}
         />,
       ]}
       isOpen={this.state.isOpen}
       onRequestClose={this.toggleOpen}
-      prompt={this.props.variant}
-      size="medium"
+      prompt={variant}
+      size={size}
     >
       <div className="slds-m-around--medium">
-        {this.props.content}
+        {children}
       </div>
     </Modal>
   }
