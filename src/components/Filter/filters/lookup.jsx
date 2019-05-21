@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import FilterValue from '../value'
 import Combobox from '@salesforce/design-system-react/lib/components/combobox'
@@ -15,175 +15,209 @@ const dedupe = selection => selection.reduce((acc, curr) => {
   return acc
 }, [])
 
-const LookupFilter = props => {
-  const [input, setInput] = useState()
-  const [tid, setTid] = useState(0)
-  const [prevSelections, setPrevSelections] = useState([])
-  const {
-    property,
-    options = [],
-    multiple = false,
-    optionsLimit = 5,
-    label,
-    placeholder,
-    onFilterInput,
-    onChange = () => {},
-    idProperty = 'id',
-    labelProperty = 'label',
-    valueProperty = 'value',
-    loading,
-    iconName,
-    iconCategory = 'standard',
-    ...rest
-  } = props
+class LookupFilter extends React.Component {
+  state = {
+    input: '',
+    tid: 0,
+    prevSelections: []
+  }
 
-  const addToPrevSelections = entity => {
+  static buildSelection = props => {
+    const {
+      filter: {value},
+      options,
+      idProperty,
+      labelProperty,
+      valueProperty,
+      iconName,
+      iconCategory,
+    } = props
+
+    return (value instanceof Array ? value : null !== value && [value] || [])
+      .map(v => {
+        if (typeof v === 'object') return v
+        if (!(options instanceof Array)) return null
+
+        const entity = options.filter(e => e.hasOwnProperty(valueProperty) && e[valueProperty] == v).pop()
+
+        if (!entity) return null
+        const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
+        let icon
+        if (null !== iconName && null !== iconCategory) {
+          icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
+        }
+
+        return {
+          id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
+          value: entity[valueProperty],
+          label,
+          icon
+        }
+      })
+      .filter(v => !!v)
+  }
+
+  static propTypes = {
+    property: PropTypes.string.isRequired,
+    options: PropTypes.array,
+    multiple: PropTypes.bool,
+    optionsLimit: PropTypes.number,
+    label: PropTypes.string,
+    placeholder: PropTypes.string,
+    iconName: PropTypes.string,
+    iconCategory: PropTypes.string,
+    loading: PropTypes.bool,
+    onFilterInput: PropTypes.func.isRequired,
+    idProperty: PropTypes.string,
+    labelProperty: PropTypes.string,
+    valueProperty: PropTypes.string,
+    onChange: PropTypes.func,
+    msBeforeFilter: PropTypes.number,
+  }
+
+  static defaultProps = {
+    options: [],
+    multiple: false,
+    optionsLimit: 5,
+    onChange: () => {},
+    idProperty: 'id',
+    labelProperty: 'label',
+    valueProperty: 'value',
+    iconCategory: 'standard',
+    msBeforeFilter: 500,
+  }
+
+  static buildPredicate = (selection = [], multiple) => {
+    return ListFilter.buildPredicate(selection, multiple)
+  }
+
+  static buildFieldPredicate = (filter, props) => {
+    const {multiple} = props
+    const selection = LookupFilter.buildSelection({...props, filter})
+
+    return LookupFilter.buildPredicate(selection, multiple)
+  }
+
+  static displayName = 'LookupFilter'
+
+  buildOptions = (options, selection) => {
+    const {valueProperty = 'value'} = this.props
+
+    return options.filter(
+      o => o.hasOwnProperty(valueProperty) && !selection.map(
+        s => s.hasOwnProperty(valueProperty) && s[valueProperty]
+      ).includes(o[valueProperty])
+    )
+  }
+  setInput = input => this.setState({input})
+  setTid = tid => this.setState({tid})
+  setPrevSelections = prevSelections => this.setState({prevSelections})
+  addToPrevSelections = entity => {
+    const {prevSelections} = this.state
     const entities = dedupe([].concat(prevSelections, entity))
 
     if (prevSelections.length !== entities.length) {
-      setPrevSelections(entities)
+      this.setPrevSelections(entities)
     }
   }
 
-  return <FilterValue property={property} label={label}>
-    {filterState => {
-      const {filter, setFilterValue, setPredicate} = filterState
-      const selection = LookupFilter.buildSelection({...props, filter})
+  render() {
+    const {input, tid = 0, prevSelections = []} = this.state
+    const {
+      property,
+      options,
+      multiple,
+      optionsLimit,
+      label,
+      placeholder,
+      onFilterInput,
+      onChange,
+      idProperty,
+      labelProperty,
+      valueProperty,
+      loading,
+      iconName,
+      iconCategory,
+      msBeforeFilter,
+      ...rest
+    } = this.props
 
-      addToPrevSelections(selection)
+    return <FilterValue property={property} label={label}>
+      {filterState => {
+        const {filter, setFilterValue, setPredicate} = filterState
+        const selection = LookupFilter.buildSelection({...this.props, filter})
 
-      let choices = []
-        .concat(options)
-        .filter(entity => !!entity && entity.hasOwnProperty(valueProperty))
-        .map(entity => {
-        const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
-        const item = {
-          id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
-          value: entity[valueProperty],
-          label: label,
+        this.addToPrevSelections(selection)
+
+        let choices = []
+          .concat(options)
+          .filter(entity => !!entity && entity.hasOwnProperty(valueProperty))
+          .map(entity => {
+            const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
+            const item = {
+              id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
+              value: entity[valueProperty],
+              label: label,
+            }
+
+            if (null !== iconName && null !== iconCategory) {
+              item.icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
+            }
+
+            return item
+          })
+
+        const dedupedChoices = dedupe(choices.concat(prevSelections))
+        choices = comboboxFilterAndLimit({
+          options: !multiple ? dedupedChoices : this.buildOptions(dedupedChoices, selection),
+          selection,
+          limit: optionsLimit,
+          inputValue: input
+        })
+
+        const onSelect = (e, {selection = []}) => {
+          this.setInput('')
+          const values = selection.map(({value}) => value)
+          setFilterValue(filter.id, !multiple ? values.pop() : values)
+          setPredicate(LookupFilter.buildPredicate(selection, multiple))
+          this.addToPrevSelections(selection)
+          onChange(!multiple ? values.pop() : values, filterState)
         }
 
-        if (null !== iconName && null !== iconCategory) {
-          item.icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
-        }
-
-        return item
-      })
-
-      choices = comboboxFilterAndLimit({
-        options: dedupe(choices.concat(prevSelections)),
-        selection,
-        limit: optionsLimit,
-        inputValue: input
-      })
-
-      const onSelect = (e, {selection = []}) => {
-        setInput('')
-        const values = selection.map(({value}) => value)
-        setFilterValue(filter.id, !multiple ? values.pop() : values)
-        setPredicate(LookupFilter.buildPredicate(selection, multiple))
-        addToPrevSelections(selection)
-        onChange(!multiple ? values.pop() : values, filterState)
-      }
-
-      return <div className="slds-grid">
-        <div className="slds-grow">
-          <Combobox {...rest}
-                    labels={{
-                      ...rest.labels = {},
-                      label,
-                      placeholder,
-                      placeholderReadOnly: placeholder,
-                      noOptionsFound: loading ? 'Searching...' : 'No entries found'
-                    }}
-                    events={{
-                      onChange: ({target: {value}}) => {
-                        setInput(value)
-                        clearTimeout(tid)
-                        let timeoutId = setTimeout(() => onFilterInput(value, filterState), 500)
-                        setTid(timeoutId)
-                      },
-                      onSelect,
-                      onRequestRemoveSelectedOption: onSelect,
-                    }}
-                    value={input}
-                    selection={selection}
-                    options={choices}
-                    variant={!multiple ? 'inline-listbox' : 'base'}
-                    multiple={multiple}
-          />
+        return <div className="slds-grid">
+          <div className="slds-grow">
+            <Combobox {...rest}
+                      labels={{
+                        ...rest.labels = {},
+                        label,
+                        placeholder,
+                        placeholderReadOnly: placeholder,
+                        noOptionsFound: loading ? 'Searching...' : 'No entries found'
+                      }}
+                      events={{
+                        onChange: ({target: {value}}) => {
+                          this.setInput(value)
+                          clearTimeout(tid)
+                          const timeoutId = setTimeout(() => onFilterInput(value, filterState), msBeforeFilter)
+                          this.setTid(timeoutId)
+                        },
+                        onSelect,
+                        onRequestRemoveSelectedOption: onSelect,
+                      }}
+                      value={input}
+                      selection={selection}
+                      options={choices}
+                      variant={!multiple ? 'inline-listbox' : 'base'}
+                      multiple={multiple}
+            />
+          </div>
+          {loading && <div style={{width: '25px', paddingTop: '35px', paddingLeft: '10px'}}>
+            <Spinner size="x-small" containerClassName="slds-spinner_inline"/>
+          </div>}
         </div>
-        {loading && <div style={{width: '25px', paddingTop: '35px', paddingLeft: '10px'}}>
-          <Spinner size="x-small" containerClassName="slds-spinner_inline"/>
-        </div>}
-      </div>
-    }}
-  </FilterValue>
+      }}
+    </FilterValue>
+  }
 }
-
-LookupFilter.propTypes = {
-  property: PropTypes.string.isRequired,
-  options: PropTypes.array,
-  multiple: PropTypes.bool,
-  optionsLimit: PropTypes.number,
-  label: PropTypes.string,
-  placeholder: PropTypes.string,
-  iconName: PropTypes.string,
-  iconCategory: PropTypes.string,
-  loading: PropTypes.bool,
-  onFilterInput: PropTypes.func.isRequired,
-  idProperty: PropTypes.string,
-  labelProperty: PropTypes.string,
-  valueProperty: PropTypes.string,
-  onChange: PropTypes.func,
-}
-
-LookupFilter.buildSelection = props => {
-  const {
-    filter: {value},
-    options = [],
-    idProperty,
-    valueProperty,
-    labelProperty,
-    iconName,
-    iconCategory
-  } = props
-
-  return (value instanceof Array ? value : null !== value && [value] || [])
-    .map(v => {
-      if (typeof v === 'object') return v
-      if (!(options instanceof Array)) return null
-
-      const entity = options.filter(e => e.hasOwnProperty(valueProperty) && e[valueProperty] == v).pop()
-
-      if (!entity) return null
-      const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
-      let icon
-      if (null !== iconName && null !== iconCategory) {
-        icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
-      }
-
-      return {
-        id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
-        value: entity[valueProperty],
-        label,
-        icon
-      }
-    })
-    .filter(v => !!v)
-}
-
-LookupFilter.buildPredicate = (selection = [], multiple) => {
-  return ListFilter.buildPredicate(selection, multiple)
-}
-
-LookupFilter.buildFieldPredicate = (filter, props) => {
-  const {multiple} = props
-  const selection = LookupFilter.buildSelection({...props, filter})
-
-  return LookupFilter.buildPredicate(selection, multiple)
-}
-
-LookupFilter.displayName = 'ListFilter'
 
 export default LookupFilter
