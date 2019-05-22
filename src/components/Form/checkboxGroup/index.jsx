@@ -24,6 +24,7 @@ const CheckboxGroup = props => <FastField {...props}>
                                  labels={{
                                   label: option.label || option.value
                                  }}
+                                 key={`name-${option.id}`}
 
         />)
       }
