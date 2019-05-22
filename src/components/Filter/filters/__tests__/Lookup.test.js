@@ -6,6 +6,7 @@ import FilterLookup from '../lookup'
 import FilterValue from '../../value'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
 import sinon from 'sinon'
+import {wait} from '../../../../__tests__/util'
 
 configure({adapter: new Adapter()})
 
@@ -185,9 +186,3 @@ describe('FilterLookup', function () {
     expect(onFilterInput.calledWith('test')).toBe(true)
   })
 })
-
-function wait(seconds) {
-  return new Promise((res) => {
-    setTimeout(res, seconds)
-  })
-}
