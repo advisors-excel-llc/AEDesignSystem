@@ -270,30 +270,13 @@ export const states = [
   }
 ]
 
-const StateComboBox = ({formik, ...props}) => {
-  const {values, setFieldValue} = formik
-  const statesSelected = getIn(values, props.name) || []
-  return <div>
-    <ComboBox {...props} options={states}/>
-    <div className="slds-text-align--right">
-      {
-        (props.multiple && statesSelected.length < states.length) &&
-        <a href="javascript:void(0);"
-           onClick={() => setFieldValue(props.name, states.map(({id}) => id))}>
-          Select All States
-        </a>
-      }
-      {props.multiple && statesSelected.length > 0 && statesSelected.length < states.length && ' | '}
-      {
-        (props.multiple && statesSelected.length > 0) &&
-        <a href="javascript:void(0);"
-           onClick={() => setFieldValue(props.name, [])}>
-          Clear All States
-        </a>
-      }
-    </div>
-  </div>
-}
+const StateComboBox = props => <ComboBox {...props}
+                                options={states}
+                                selectAll={true}
+                                clearAll={true}
+                                selectAllLabel="Select All States"
+                                clearAllLabel="Clear All States"
+/>
 
 StateComboBox.propTypes = {
   ...ComboBox.propTypes
