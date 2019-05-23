@@ -22,10 +22,11 @@ module.exports = {
   entry: entries,
   output: {
     path: path.resolve(__dirname, 'lib'),
-    publicPath: '/',
+    publicPath: '/lib/',
     filename: '[name].js',
     library: 'aeDesignSystem',
-    libraryTarget: 'commonjs2',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
   externals: [nodeExternals()],
   resolve: {
