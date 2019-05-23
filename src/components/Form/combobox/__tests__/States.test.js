@@ -2,7 +2,8 @@ import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import { Formik, getIn } from 'formik'
-import StatesComboBox, {states} from '../states'
+import StatesComboBox from '../states'
+import states from '../presets/states'
 
 configure({adapter: new Adapter()})
 

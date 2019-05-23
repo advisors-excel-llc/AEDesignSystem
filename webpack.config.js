@@ -7,7 +7,7 @@ const entries = function () {
   const files = WebpackWatchedGlobEntries.getEntries(
     [
       path.resolve(__dirname, 'src/**/*.jsx'),
-      path.resolve(__dirname, 'src/**/*(!.test.).js')
+      path.resolve(__dirname, 'src/**/*(!.test).js')
     ],
     {
     ignore: '**/__tests__/*'
