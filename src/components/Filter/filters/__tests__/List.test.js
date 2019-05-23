@@ -98,7 +98,11 @@ describe('FilterList', function () {
       }
     })
     const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
+    const rendered = wrapper.renderProp('children')({...context, filter: {
+        id: 'test',
+        property: 'test',
+        value: 'default'
+      }})
     const combo = rendered.find(ComboBox)
     const input = combo.find('input')
 

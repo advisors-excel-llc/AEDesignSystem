@@ -1,80 +1,87 @@
 {
-  "name": "aedesignsystem",
-  "version": "2.0.2",
-  "description": "Extension Components to SLDS",
-  "main": "lib/index.js",
-  "scripts": {
-    "test": "jest --no-cache",
-    "build": "./node_modules/.bin/webpack",
-    "devserver": "./node_modules/.bin/webpack-dev-server --inline"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/advisors-excel-llc/AEDesignSystem.git"
-  },
-  "author": "Alex Boyce <alex.boyce@advisorsexcel.com>, Josh Willis <josh.willis@advisorsexcel.com>",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/advisors-excel-llc/AEDesignSystem/issues"
-  },
-  "homepage": "https://github.com/advisors-excel-llc/AEDesignSystem#readme",
-  "peerDependencies": {
-    "@salesforce-ux/design-system": "^2.7",
-    "@salesforce/design-system-react": "^0.10",
-    "formik": "^1.5",
-    "moment": "^2",
-    "prop-types": "^15.6",
-    "react": "^16.8",
-    "react-dom": "^16.8"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/plugin-proposal-class-properties": "^7.4.4",
-    "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/plugin-proposal-throw-expressions": "^7.2.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/polyfill": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/preset-react": "^7.0.0",
-    "ajv": "^6.5.5",
-    "babel-jest": "^24.8.0",
-    "babel-loader": "^8.0.6",
-    "babel-polyfill": "^6.26.0",
-    "core-js": "^3.0.1",
-    "css-loader": "^2.1.1",
-    "enzyme": "^3.9.0",
-    "enzyme-adapter-react-16": "^1.13.0",
-    "file-loader": "^1.1.11",
-    "identity-obj-proxy": "^3.0.0",
-    "jest": "^24.8.0",
-    "jest-canvas-mock": "^1.1.0",
-    "jsdom": "^11.11.0",
-    "mini-css-extract-plugin": "^0.4.4",
-    "node-sass": "^4.12.0",
-    "react-test-renderer": "^16.6.1",
-    "sass-loader": "^7.0.3",
-    "sinon": "^7.3.2",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.3.1",
-    "webpack-node-externals": "^1.7.2",
-    "webpack-watched-glob-entries-plugin": "^2.1.5",
-    "yup": "^0.27.0"
-  },
-  "jest": {
-    "browser": true,
-    "testMatch": [
-      "**/?(*.)+(spec|test).js"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
-      ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy"
+    "name": "aedesignsystem",
+    "version": "2.0.2",
+    "description": "Extension Components to SLDS",
+    "main": "lib/index.js",
+    "scripts": {
+        "test": "jest --no-cache",
+        "build": "./node_modules/.bin/webpack",
+        "devserver": "./node_modules/.bin/webpack-dev-server --inline"
     },
-    "setupFiles": [
-      "core-js/es/object/from-entries",
-      "@babel/polyfill",
-      "jest-canvas-mock"
-    ]
-  }
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/advisors-excel-llc/AEDesignSystem.git"
+    },
+    "author": "Alex Boyce <alex.boyce@advisorsexcel.com>, Josh Willis <josh.willis@advisorsexcel.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/advisors-excel-llc/AEDesignSystem/issues"
+    },
+    "homepage": "https://github.com/advisors-excel-llc/AEDesignSystem#readme",
+    "peerDependencies": {
+        "@salesforce-ux/design-system": "^2.7",
+        "@salesforce/design-system-react": "^0.10",
+        "formik": "^1.5",
+        "moment": "^2",
+        "prop-types": "^15.6",
+        "react": "^16.8",
+        "react-dom": "^16.8"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.5",
+        "@babel/plugin-proposal-class-properties": "^7.4.4",
+        "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
+        "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+        "@babel/plugin-proposal-throw-expressions": "^7.2.0",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+        "@babel/polyfill": "^7.4.4",
+        "@babel/preset-env": "^7.4.5",
+        "@babel/preset-react": "^7.0.0",
+        "@salesforce-ux/design-system": "^2.9.2",
+        "@salesforce/design-system-react": "^0.10",
+        "ajv": "^6.10.0",
+        "babel-jest": "^24.8.0",
+        "babel-loader": "^8.0.6",
+        "babel-polyfill": "^6.26.0",
+        "core-js": "^3.1.2",
+        "css-loader": "^2.1.1",
+        "enzyme": "^3.9.0",
+        "enzyme-adapter-react-16": "^1.13.1",
+        "file-loader": "^1.1.11",
+        "formik": "^1.5.7",
+        "identity-obj-proxy": "^3.0.0",
+        "jest": "^24.8.0",
+        "jest-canvas-mock": "^1.1.0",
+        "jsdom": "^11.11.0",
+        "mini-css-extract-plugin": "^0.4.5",
+        "moment": "^2.24.0",
+        "node-sass": "^4.12.0",
+        "prop-types": "^15.7.2",
+        "react": "^16.8",
+        "react-dom": "^16.8",
+        "react-test-renderer": "^16.8.6",
+        "sass-loader": "^7.0.3",
+        "sinon": "^7.3.2",
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2",
+        "webpack-dev-server": "^3.4.1",
+        "webpack-node-externals": "^1.7.2",
+        "webpack-watched-glob-entries-plugin": "^2.1.5",
+        "yup": "^0.27.0"
+    },
+    "jest": {
+        "browser": true,
+        "testMatch": [
+            "**/?(*.)+(spec|test).js"
+        ],
+        "moduleNameMapper": {
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+            ".+\\.(css|styl|less|sass|scss)$": "identity-obj-proxy"
+        },
+        "setupFiles": [
+            "core-js/es/object/from-entries",
+            "@babel/polyfill",
+            "jest-canvas-mock"
+        ]
+    }
 }

@@ -104,7 +104,8 @@ class ListFilter extends React.Component {
           if (multiple) {
             setFilterValue(id, selection.map(({value}) => value))
           } else {
-            const {value} = selection.pop()
+            const option = selection.pop()
+            const value = !!option && option.value || undefined
             setFilterValue(id, value)
           }
           setPredicate(ListFilter.buildPredicate(selection, multiple))

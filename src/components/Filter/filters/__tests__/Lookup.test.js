@@ -94,7 +94,11 @@ describe('FilterLookup', function () {
       }
     })
     const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
+    const rendered = wrapper.renderProp('children')({...context, filter: {
+        id: 'test',
+        property: 'test',
+        value: 'default'
+      }})
     const combo = rendered.find(ComboBox)
 
 
@@ -103,9 +107,9 @@ describe('FilterLookup', function () {
 
     const option = rendered.find('span.slds-listbox__option')
 
-    expect(option).toHaveLength(2)
+    expect(option).toHaveLength(1)
 
-    option.at(1).simulate('click')
+    option.at(0).simulate('click')
     expect(filters.test.value).toBe('changed')
   })
 

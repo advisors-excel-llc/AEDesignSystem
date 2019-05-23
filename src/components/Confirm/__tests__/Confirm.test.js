@@ -42,7 +42,7 @@ describe('Confirm renders correctly', function () {
     confirm.instance().show()
     confirm.update()
 
-    const cancel = confirm.find('button.slds-button').at(0)
+    const cancel = confirm.find('footer button.slds-button').at(0)
     expect(cancel.text()).toBe('Test Cancel')
 
     cancel.simulate('click')
@@ -59,7 +59,7 @@ describe('Confirm renders correctly', function () {
     confirm.instance().show()
     confirm.update()
 
-    const ok = confirm.find('button.slds-button').at(1)
+    const ok = confirm.find('footer button.slds-button').at(1)
     expect(ok.text()).toBe('Test Ok')
 
     ok.simulate('click')

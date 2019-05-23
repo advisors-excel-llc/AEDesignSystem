@@ -24,7 +24,7 @@ describe('Alert renders correctly', function () {
     const p = alert.find('p')
     expect(p.text()).toBe('This is a test')
 
-    const button = alert.find('button.slds-button')
+    const button = alert.find('footer button.slds-button')
 
     expect(button.text()).toBe('Test')
 
