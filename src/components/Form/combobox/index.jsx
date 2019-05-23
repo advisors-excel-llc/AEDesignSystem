@@ -73,15 +73,11 @@ class ComboBox extends React.Component {
       name,
       children,
       options,
-      disabled,
-      multiple,
-      required,
       selectAll,
       clearAll,
       selectAllLabel,
       clearAllLabel,
       optionValueProperty,
-      variant,
       labels,
       label,
       placeholder,
@@ -91,23 +87,8 @@ class ComboBox extends React.Component {
       ...componentProps
     } = this.props
 
-    labels.label = label
-    labels.placeholder = placeholder
-    labels.placeholderReadOnly = placeholder
-
-    componentProps.variant = variant
-
-    if (multiple) {
-      componentProps.multiple = true
-    }
-
-    if (required) {
-      componentProps.required = true
-    }
-
-    if (disabled) {
-      componentProps.disabled = true
-    }
+    const cboLabels = {...labels, label, placeholder, placeholderReadOnly: placeholder}
+    const {multiple, variant, disabled} = componentProps
 
     const {setFieldValue, submitCount, setFieldTouched} = formik
     const value = getIn(formik.values, name)
@@ -143,7 +124,7 @@ class ComboBox extends React.Component {
 
     return <React.Fragment>
       <SFComboBox {...componentProps}
-                       labels={labels}
+                       labels={cboLabels}
                        events={{
                          onSelect: (event, {selection = []}) => {
                            if (disabled) return
