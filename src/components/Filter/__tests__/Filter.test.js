@@ -3,12 +3,12 @@ import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import FilterField from '../field'
 import MockFilterValue from '../field/__tests__/MockFilterValue'
-import FilterInput from '@salesforce/design-system-react/lib/components/filter'
 import Filter from '../index'
 
 configure({adapter: new Adapter()})
 
 describe('Filter', function () {
+  const mountNode = document.createElement('body')
   const filters = [
     {
       property: 'test',
@@ -18,7 +18,7 @@ describe('Filter', function () {
   ]
   const filter = mount(<Filter filters={filters} isOpen={true}>
     <MockFilterValue property="test" label="Test"/>
-  </Filter>)
+  </Filter>, {attachTo: mountNode})
 
   it ('should have default values without modification', function () {
     expect(filter.state('modified')).toBe(false)
@@ -27,9 +27,10 @@ describe('Filter', function () {
     expect(filter.state('properties')).toEqual({"test": "Test"})
     expect(filter.state('components')).toHaveLength(1)
 
-
+    filter.find('.slds-filters__item .slds-grow button').simulate('click')
 
     expect(filter.contains(FilterField)).toBe(true)
     expect(filter.contains(MockFilterValue)).toBe(true)
+    expect(document.body.querySelector('.mock-filter-value').textContent).toBe('Toggle Value')
   })
 })
