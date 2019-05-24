@@ -25,8 +25,7 @@ module.exports = {
     publicPath: '/lib/',
     filename: '[name].js',
     library: 'aeDesignSystem',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    libraryTarget: 'commonjs2',
   },
   externals: [nodeExternals()],
   resolve: {
