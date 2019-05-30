@@ -2,7 +2,6 @@ import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import FilterList from '../list'
-import FilterValue from '../../value'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
 
 configure({adapter: new Adapter()})
@@ -35,29 +34,49 @@ describe('FilterList', function () {
   }
 
   it('Should have a default value of "default"', function () {
-    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} {...context} />)
+    const filter = mount(
+      <FilterList property="test"
+                  label="Test"
+                  options={['default', 'changed']}
+                  multiple={false}
+                  {...context}
+                  filter={{
+                    id: 'test',
+                    property: 'test',
+                    value: 'default'
+                  }}
+      />)
 
-    const wrapper = filter.find(FilterValue)
-    expect(wrapper).toHaveLength(1)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
-    const input = rendered.find(ComboBox)
+    const input = filter.find(ComboBox)
     expect(input).toHaveLength(1)
     expect(input.prop('selection')[0].value).toBe('default')
 
-    expect(FilterList.buildFieldPredicate(filters.test, {...input.props(), isSelected: FilterList.defaultProps.isSelected})).toBe('is default')
+    expect(FilterList.buildFieldPredicate(filters.test, {
+      ...input.props(),
+      isSelected: FilterList.defaultProps.isSelected
+    })).toBe('is default')
   })
 
   it('Should change single text value', function () {
-    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} {...context} />)
+    const filter = mount(
+      <FilterList property="test"
+                  label="Test"
+                  options={['default', 'changed']}
+                  multiple={false}
+                  {...context}
+                  filter={{
+                    id: 'test',
+                    property: 'test',
+                    value: 'default'
+                  }}
+      />)
 
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
-    const combo = rendered.find(ComboBox)
+    const combo = filter.find(ComboBox)
     const input = combo.find('input')
 
     input.simulate('click')
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(2)
 
@@ -66,30 +85,35 @@ describe('FilterList', function () {
   })
 
   it('Should change single object value', function () {
-    const filter = mount(<FilterList property="test" label="Test" options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]} multiple={false} {...context} />)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: {
-        id: 'test',
-        property: 'test',
-        value: 'default'
-      }})
-    const combo = rendered.find(ComboBox)
+    const filter = mount(
+      <FilterList property="test"
+                  label="Test"
+                  options={[
+                    {
+                      id: 'default',
+                      value: 'default',
+                      label: 'Default',
+                    },
+                    {
+                      id: 'changed',
+                      value: 'changed',
+                      label: 'Changed',
+                    }
+                  ]}
+                  multiple={false}
+                  {...context}
+                  filter={{
+                    id: 'test',
+                    property: 'test',
+                    value: 'default'
+                  }}
+      />)
+    const combo = filter.find(ComboBox)
     const input = combo.find('input')
 
     input.simulate('click')
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(2)
 
@@ -98,16 +122,21 @@ describe('FilterList', function () {
   })
 
   it('Should change multiple text value', function () {
-    const filterValue = {...filters.test, value: ["default"]}
-    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={true} {...context} />)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
-    const combo = rendered.find(ComboBox)
+    const filterValue = {...filters.test, value: ['default']}
+    const filter = mount(
+      <FilterList property="test"
+                  label="Test"
+                  options={['default', 'changed']}
+                  multiple={true}
+                  {...context}
+                  filter={filterValue}
+      />)
+    const combo = filter.find(ComboBox)
     const input = combo.find('input')
 
     input.simulate('click')
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(1)
 
@@ -116,27 +145,32 @@ describe('FilterList', function () {
   })
 
   it('Should change multiple object value', function () {
-    const filterValue = {...filters.test, value: ["default"]}
-    const filter = mount(<FilterList property="test" label="Test" options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]} multiple={true} {...context} />)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
-    const combo = rendered.find(ComboBox)
+    const filterValue = {...filters.test, value: ['default']}
+    const filter = mount(
+      <FilterList property="test"
+                  label="Test"
+                  options={[
+                    {
+                      id: 'default',
+                      value: 'default',
+                      label: 'Default',
+                    },
+                    {
+                      id: 'changed',
+                      value: 'changed',
+                      label: 'Changed',
+                    }
+                  ]}
+                  multiple={true}
+                  {...context}
+                  filter={filterValue}
+      />)
+    const combo = filter.find(ComboBox)
     const input = combo.find('input')
 
     input.simulate('click')
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(1)
 

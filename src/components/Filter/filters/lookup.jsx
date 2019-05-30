@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FilterValue from '../value'
 import Combobox from '@salesforce/design-system-react/lib/components/combobox'
 import comboboxFilterAndLimit from '@salesforce/design-system-react/lib/components/combobox/filter'
 import Spinner from '@salesforce/design-system-react/lib/components/spinner'
@@ -121,7 +120,7 @@ class LookupFilter extends React.Component {
     }
   }
 
-  render() {
+  render () {
     const {input, tid = 0, prevSelections = []} = this.state
     const {
       property,
@@ -139,84 +138,85 @@ class LookupFilter extends React.Component {
       iconName,
       iconCategory,
       msBeforeFilter,
+      filter,
+      setFilterValue,
+      setPredicate,
       ...rest
     } = this.props
 
-    return <FilterValue property={property} label={label}>
-      {filterState => {
-        const {filter, setFilterValue, setPredicate} = filterState
-        const selection = LookupFilter.buildSelection({...this.props, filter})
+    if (!property) return null
+    if (!filter || !property || property !== filter.property) return null
 
-        this.addToPrevSelections(selection)
+    const selection = LookupFilter.buildSelection({...this.props, filter})
 
-        let choices = []
-          .concat(options)
-          .filter(entity => !!entity && entity.hasOwnProperty(valueProperty))
-          .map(entity => {
-            const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
-            const item = {
-              id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
-              value: entity[valueProperty],
-              label: label,
-            }
+    this.addToPrevSelections(selection)
 
-            if (null !== iconName && null !== iconCategory) {
-              item.icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
-            }
-
-            return item
-          })
-
-        const dedupedChoices = dedupe(choices.concat(prevSelections))
-        choices = comboboxFilterAndLimit({
-          options: !multiple ? dedupedChoices : this.buildOptions(dedupedChoices, selection),
-          selection,
-          limit: optionsLimit,
-          inputValue: input
-        })
-
-        const onSelect = (e, {selection = []}) => {
-          this.setInput('')
-          const values = selection.map(({value}) => value)
-          setFilterValue(filter.id, !multiple ? values.pop() : values)
-          setPredicate(LookupFilter.buildPredicate(selection, multiple))
-          this.addToPrevSelections(selection)
-          onChange(!multiple ? values.pop() : values, filterState)
+    let choices = []
+      .concat(options)
+      .filter(entity => !!entity && entity.hasOwnProperty(valueProperty))
+      .map(entity => {
+        const label = entity.hasOwnProperty(labelProperty) ? entity[labelProperty] : entity[valueProperty]
+        const item = {
+          id: entity.hasOwnProperty(idProperty) ? entity[idProperty] : entity[valueProperty],
+          value: entity[valueProperty],
+          label: label,
         }
 
-        return <div className="slds-grid">
-          <div className="slds-grow">
-            <Combobox {...rest}
-                      labels={{
-                        ...rest.labels = {},
-                        label,
-                        placeholder,
-                        placeholderReadOnly: placeholder,
-                        noOptionsFound: loading ? 'Searching...' : 'No entries found'
-                      }}
-                      events={{
-                        onChange: ({target: {value}}) => {
-                          this.setInput(value)
-                          clearTimeout(tid)
-                          const timeoutId = setTimeout(() => onFilterInput(value, filterState), msBeforeFilter)
-                          this.setTid(timeoutId)
-                        },
-                        onSelect,
-                        onRequestRemoveSelectedOption: onSelect,
-                      }}
-                      value={input}
-                      selection={selection}
-                      options={choices}
-                      variant={!multiple ? 'inline-listbox' : 'base'}
-                      multiple={multiple}
-            />
-          </div>
-          {loading && <div style={{width: '25px', paddingTop: '35px', paddingLeft: '10px'}}>
-            <Spinner size="x-small" containerClassName="slds-spinner_inline"/>
-          </div>}
-        </div>
-      }}
-    </FilterValue>
+        if (null !== iconName && null !== iconCategory) {
+          item.icon = <Icon assistiveText={label} name={iconName} category={iconCategory} size="small"/>
+        }
+
+        return item
+      })
+
+    const dedupedChoices = dedupe(choices.concat(prevSelections))
+    choices = comboboxFilterAndLimit({
+      options: !multiple ? dedupedChoices : this.buildOptions(dedupedChoices, selection),
+      selection,
+      limit: optionsLimit,
+      inputValue: input
+    })
+
+    const onSelect = (e, {selection = []}) => {
+      this.setInput('')
+      const values = selection.map(({value}) => value)
+      setFilterValue(filter.id, !multiple ? values.pop() : values)
+      setPredicate(LookupFilter.buildPredicate(selection, multiple))
+      this.addToPrevSelections(selection)
+      onChange(!multiple ? values.pop() : values, this.props)
+    }
+
+    return <div className="slds-grid">
+      <div className="slds-grow">
+        <Combobox {...rest}
+                  labels={{
+                    ...rest.labels = {},
+                    label,
+                    placeholder,
+                    placeholderReadOnly: placeholder,
+                    noOptionsFound: loading ? 'Searching...' : 'No entries found'
+                  }}
+                  events={{
+                    onChange: ({target: {value}}) => {
+                      this.setInput(value)
+                      clearTimeout(tid)
+                      const timeoutId = setTimeout(() => onFilterInput(value, this.props), msBeforeFilter)
+                      this.setTid(timeoutId)
+                    },
+                    onSelect,
+                    onRequestRemoveSelectedOption: onSelect,
+                  }}
+                  value={input}
+                  selection={selection}
+                  options={choices}
+                  variant={!multiple ? 'inline-listbox' : 'base'}
+                  multiple={multiple}
+        />
+      </div>
+      {loading && <div style={{width: '25px', paddingTop: '35px', paddingLeft: '10px'}}>
+        <Spinner size="x-small" containerClassName="slds-spinner_inline"/>
+      </div>}
+    </div>
   }
 }
 

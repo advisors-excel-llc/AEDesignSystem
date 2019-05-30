@@ -2,7 +2,6 @@ import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import FilterLookup from '../lookup'
-import FilterValue from '../../value'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
 import sinon from 'sinon'
 import { wait } from '../../../../__tests__/util'
@@ -50,12 +49,9 @@ describe('FilterLookup', function () {
         value: 'changed',
         label: 'Changed',
       }
-    ]} multiple={false} onFilterInput={onFilterInput} {...context} />)
+    ]} multiple={false} onFilterInput={onFilterInput} {...context} filter={filters.test}/>)
 
-    const wrapper = filter.find(FilterValue)
-    expect(wrapper).toHaveLength(1)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
-    const input = rendered.find(ComboBox)
+    const input = filter.find(ComboBox)
     expect(input).toHaveLength(1)
     expect(input.prop('selection')[0].value).toBe('default')
 
@@ -80,21 +76,14 @@ describe('FilterLookup', function () {
                                        onFilterInput={onFilterInput}
                                        menuPosition="relative"
                                        {...context}
+                                       filter={filters.test}
     />)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({
-      ...context, filter: {
-        id: 'test',
-        property: 'test',
-        value: 'default'
-      }
-    })
-    const combo = rendered.find(ComboBox)
+    const combo = filter.find(ComboBox)
 
     combo.instance().instanceRef.setState({isOpen: true})
     combo.update()
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(1)
 
@@ -121,16 +110,14 @@ describe('FilterLookup', function () {
         value: 'changed',
         label: 'Changed',
       }
-    ]} multiple={true} onFilterInput={onFilterInput} {...context}/>)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
-    const combo = rendered.find(ComboBox)
+    ]} multiple={true} onFilterInput={onFilterInput} {...context} filter={filterValue}/>)
+    const combo = filter.find(ComboBox)
     const input = combo.find('input')
     combo.setState({isOpen: false}).update()
 
     input.simulate('click')
 
-    const option = rendered.find('span.slds-listbox__option')
+    const option = filter.find('span.slds-listbox__option')
 
     expect(option).toHaveLength(1)
 
@@ -157,10 +144,9 @@ describe('FilterLookup', function () {
                                        onFilterInput={onFilterInput}
                                        msBeforeFilter={0}
                                        {...context}
+                                       filter={filters.test}
     />)
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
-    const combo = rendered.find(ComboBox)
+    const combo = filter.find(ComboBox)
 
     combo.instance().instanceRef.handleInputChange({target: {value: 'test'}})
 

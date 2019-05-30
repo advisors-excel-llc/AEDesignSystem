@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Combobox from '@salesforce/design-system-react/lib/components/combobox'
 import comboboxFilterAndLimit from '@salesforce/design-system-react/lib/components/combobox/filter'
-import FilterValue from '../value'
 
 class ListFilter extends React.Component {
   state = {
@@ -61,76 +60,72 @@ class ListFilter extends React.Component {
     return ListFilter.buildPredicate(selection, multiple)
   }
 
-  render() {
-    const {property, label, ...props} = this.props
+  render () {
+    const {property, label, filter, setPredicate, setFilterValue, options = [], multiple, optionsLimit = 5, placeholder, isSelected, ...rest} = this.props
     const {input} = this.state
 
-    return <FilterValue property={property} label={label}>{
-      filterValue => {
-        const {filter: {id, value}, setPredicate, setFilterValue} = filterValue
-        const {options = [], multiple, optionsLimit = 5, label, placeholder, isSelected, ...rest} = props
+    if (!property) return null
+    if (!filter || !property || property !== filter.property) return null
 
-        let comboOptions = options.map(o => {
-          if (typeof o !== 'object') {
-            return {
-              id: o,
-              value: o,
-              label: o
-            }
-          }
-
-          return {
-            ...o,
-            id: !!o.id && o.id || o.value
-          }
-        })
-
-        const values = (value instanceof Array ? value : null !== value && [value] || [])
-          .map(v => typeof v === 'object' ? v.value : v)
-        const selection = comboOptions.filter(({value}) => isSelected(value, values))
-
-        if (!!multiple) {
-          rest.multiple = true
-
-          comboOptions = comboboxFilterAndLimit({
-            options: comboOptions,
-            selection,
-            limit: optionsLimit,
-            inputValue: input,
-          })
+    const {id, value} = filter
+    let comboOptions = options.map(o => {
+      if (typeof o !== 'object') {
+        return {
+          id: o,
+          value: o,
+          label: o
         }
-
-        const onSelect = (e, {selection = []}) => {
-          if (multiple) {
-            setFilterValue(id, selection.map(({value}) => value))
-          } else {
-            const option = selection.pop()
-            const value = !!option && option.value || undefined
-            setFilterValue(id, value)
-          }
-          setPredicate(ListFilter.buildPredicate(selection, multiple))
-        }
-
-        return <Combobox {...rest}
-                         labels={{
-                           label,
-                           placeholder,
-                           placeholderReadOnly: placeholder,
-                         }}
-                         variant={!!multiple ? 'base' : 'readonly'}
-                         options={comboOptions}
-                         value={input}
-                         selection={selection}
-                         events={{
-                           onChange: e => this.setInput(e.target.value),
-                           onSelect,
-                           onRequestRemoveSelectedOption: onSelect,
-                         }}
-
-        />
       }
+
+      return {
+        ...o,
+        id: !!o.id && o.id || o.value
+      }
+    })
+
+    const values = (value instanceof Array ? value : null !== value && [value] || [])
+      .map(v => typeof v === 'object' ? v.value : v)
+    const selection = comboOptions.filter(({value}) => isSelected(value, values))
+
+    if (!!multiple) {
+      rest.multiple = true
+
+      comboOptions = comboboxFilterAndLimit({
+        options: comboOptions,
+        selection,
+        limit: optionsLimit,
+        inputValue: input,
+      })
     }
-    </FilterValue>
+
+    const onSelect = (e, {selection = []}) => {
+      if (multiple) {
+        setFilterValue(id, selection.map(({value}) => value))
+      } else {
+        const option = selection.pop()
+        const value = !!option && option.value || undefined
+        setFilterValue(id, value)
+      }
+      setPredicate(ListFilter.buildPredicate(selection, multiple))
+    }
+
+    return <Combobox {...rest}
+                     labels={{
+                       label,
+                       placeholder,
+                       placeholderReadOnly: placeholder,
+                     }}
+                     variant={!!multiple ? 'base' : 'readonly'}
+                     options={comboOptions}
+                     value={input}
+                     selection={selection}
+                     events={{
+                       onChange: e => this.setInput(e.target.value),
+                       onSelect,
+                       onRequestRemoveSelectedOption: onSelect,
+                     }}
+
+    />
   }
 }
 
