@@ -16,6 +16,7 @@ describe('Filter', function () {
       isNew: false,
     },
   ]
+
   const filter = mount(<Filter filters={filters} isOpen={true}>
     <MockFilterValue property="test" label="Test"/>
   </Filter>, {attachTo: mountNode})
@@ -32,5 +33,12 @@ describe('Filter', function () {
     expect(filter.contains(FilterField)).toBe(true)
     expect(filter.contains(MockFilterValue)).toBe(true)
     expect(document.body.querySelector('.mock-filter-value').textContent).toBe('Toggle Value')
+  })
+
+  it ('should allow for new filter', function () {
+    filter.find('.slds-filters__footer SLDSButton').at(0).simulate('click')
+
+    const filters = Object.values(filter.state('activeFilters')).filter(f => !f.property)
+    expect(filters).toHaveLength(1)
   })
 })

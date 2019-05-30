@@ -102,7 +102,7 @@ class FilterField extends React.Component {
         </div>
         <div className="slds-p-around--small">
           {
-            React.createElement(
+            !!valueField && React.createElement(
               valueField.type,
               {
                 ...valueField.props,
@@ -114,7 +114,7 @@ class FilterField extends React.Component {
                 filter,
                 properties, ...rest
               },
-              valueField.props.children
+              valueField.hasOwnProperty('props') && valueField.props.hasOwnProperty('children') && valueField.props.children
             )
           }
         </div>

@@ -2,7 +2,6 @@ import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import FilterText from '../text'
-import FilterValue from '../../value'
 import Input from '@salesforce/design-system-react/lib/components/input'
 
 configure({adapter: new Adapter()})
@@ -34,20 +33,16 @@ describe('FilterText', function () {
     hasProperty: () => {},
   }
 
-  const filter = mount(<FilterText property="test" label="Test" {...context} />)
+  const filter = mount(<FilterText property="test" label="Test" {...context} filter={filters.test} />)
 
   it('Should have a default value of "default"', function () {
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({filter: filters.test})
-    const input = rendered.find(Input)
+    const input = filter.find(Input)
     expect(input).toHaveLength(1)
     expect(input.prop('value')).toBe('default')
   })
 
   it('Should change the filter value and predicate', function () {
-    const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
-    const input = rendered.find('input')
+    const input = filter.find('input')
     expect(input).toHaveLength(1)
 
     input.simulate('change', {target: {value: 'new value'}})

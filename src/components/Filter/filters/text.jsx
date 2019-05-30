@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Input from '@salesforce/design-system-react/lib/components/input'
 
-const TextFilter = ({property, label, filter: {id, value}, setPredicate, setFilterValue, ...props}) =>
-  <Input {...props}
+const TextFilter = ({property, label, filter, setPredicate, setFilterValue, ...props}) =>
+  !!filter && <Input {...props}
          label="Value"
          onChange={({target: {value}}) => {
-           setFilterValue(id, value)
+           setFilterValue(filter.id, value)
            setPredicate(`contains ${value}`)
          }}
-         value={value || ''}
+         value={!!filter.value && filter.value || ''}
   />
 
 TextFilter.buildFieldPredicate = field => !!field.value && field.value.length > 0 && `contains ${field.value}` || `is empty`
