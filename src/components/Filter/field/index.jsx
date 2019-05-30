@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import FilterInput from '@salesforce/design-system-react/lib/components/filter'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
 import { connect } from '../context'
-import { Provider } from './context'
 
 class FilterField extends React.Component {
 
@@ -102,9 +101,22 @@ class FilterField extends React.Component {
           />
         </div>
         <div className="slds-p-around--small">
-          <Provider value={{predicate, setPredicate: this.setPredicate, filters, removeFilter, setFilter, filter, properties, ...rest}}>
-            {valueField}
-          </Provider>
+          {
+            React.createElement(
+              valueField.type,
+              {
+                ...valueField.props,
+                predicate,
+                setPredicate: this.setPredicate,
+                filters,
+                removeFilter,
+                setFilter,
+                filter,
+                properties, ...rest
+              },
+              valueField.props.children
+            )
+          }
         </div>
       </FilterInput>
   }

@@ -1,12 +1,11 @@
 import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { Provider } from '../../field/context'
 import FilterLookup from '../lookup'
 import FilterValue from '../../value'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
 import sinon from 'sinon'
-import {wait} from '../../../../__tests__/util'
+import { wait } from '../../../../__tests__/util'
 
 configure({adapter: new Adapter()})
 
@@ -40,24 +39,18 @@ describe('FilterLookup', function () {
   const onFilterInput = sinon.spy()
 
   it('Should have a default value of "default"', function () {
-    const filter = mount(<Provider value={context}>
-      <FilterLookup property="test" label="Test" options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]} multiple={false} onFilterInput={onFilterInput} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
+    const filter = mount(<FilterLookup property="test" label="Test" options={[
+      {
+        id: 'default',
+        value: 'default',
+        label: 'Default',
+      },
+      {
+        id: 'changed',
+        value: 'changed',
+        label: 'Changed',
       }
-    })
+    ]} multiple={false} onFilterInput={onFilterInput} {...context} />)
 
     const wrapper = filter.find(FilterValue)
     expect(wrapper).toHaveLength(1)
@@ -71,36 +64,32 @@ describe('FilterLookup', function () {
   })
 
   it('Should change single object value', function () {
-    const filter = mount(<Provider value={context}>
-      <FilterLookup property="test" label="Test" options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]}
-                    multiple={false}
-                    onFilterInput={onFilterInput}
-                    menuPosition="relative"
-      />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
+    const filter = mount(<FilterLookup property="test" label="Test" options={[
+      {
+        id: 'default',
+        value: 'default',
+        label: 'Default',
+      },
+      {
+        id: 'changed',
+        value: 'changed',
+        label: 'Changed',
       }
-    })
+    ]}
+                                       multiple={false}
+                                       onFilterInput={onFilterInput}
+                                       menuPosition="relative"
+                                       {...context}
+    />)
     const wrapper = filter.find(FilterValue)
-    const rendered = wrapper.renderProp('children')({...context, filter: {
+    const rendered = wrapper.renderProp('children')({
+      ...context, filter: {
         id: 'test',
         property: 'test',
         value: 'default'
-      }})
+      }
+    })
     const combo = rendered.find(ComboBox)
-
 
     combo.instance().instanceRef.setState({isOpen: true})
     combo.update()
@@ -114,29 +103,25 @@ describe('FilterLookup', function () {
   })
 
   it('Should change multiple object value', function () {
-    const filterValue = {...filters.test, value: [{
-        id: "default",
-        value: "default",
-        label: "Default",
-      }]}
-    const filter = mount(<Provider value={context}>
-      <FilterLookup property="test" label="Test" options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]} multiple={true} onFilterInput={onFilterInput} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filterValue}
+    const filterValue = {
+      ...filters.test, value: [{
+        id: 'default',
+        value: 'default',
+        label: 'Default',
+      }]
+    }
+    const filter = mount(<FilterLookup property="test" label="Test" options={[
+      {
+        id: 'default',
+        value: 'default',
+        label: 'Default',
+      },
+      {
+        id: 'changed',
+        value: 'changed',
+        label: 'Changed',
       }
-    })
+    ]} multiple={true} onFilterInput={onFilterInput} {...context}/>)
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
     const combo = rendered.find(ComboBox)
@@ -154,30 +139,25 @@ describe('FilterLookup', function () {
   })
 
   it('Should fire onFilterInput', async function () {
-    const filter = mount(<Provider value={context}>
-      <FilterLookup property="test"
-                    label="Test"
-                    options={[
-        {
-          id: "default",
-          value: "default",
-          label: "Default",
-        },
-        {
-          id: "changed",
-          value: "changed",
-          label: "Changed",
-        }
-      ]}
-                    multiple={false}
-                    onFilterInput={onFilterInput}
-                    msBeforeFilter={0}
-      />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
-      }
-    })
+    const filter = mount(<FilterLookup property="test"
+                                       label="Test"
+                                       options={[
+                                         {
+                                           id: 'default',
+                                           value: 'default',
+                                           label: 'Default',
+                                         },
+                                         {
+                                           id: 'changed',
+                                           value: 'changed',
+                                           label: 'Changed',
+                                         }
+                                       ]}
+                                       multiple={false}
+                                       onFilterInput={onFilterInput}
+                                       msBeforeFilter={0}
+                                       {...context}
+    />)
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
     const combo = rendered.find(ComboBox)

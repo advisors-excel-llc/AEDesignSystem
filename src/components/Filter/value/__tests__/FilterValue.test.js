@@ -2,7 +2,6 @@ import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import FilterValue from '../'
-import { Provider } from '../../field/context'
 
 configure({adapter: new Adapter()})
 
@@ -33,8 +32,7 @@ describe('FilterValue should render', function () {
     hasProperty: () => {},
   }
 
-  const filter = mount(<Provider value={context}>
-    <FilterValue property="test" label="Test">
+  const filter = mount(<FilterValue property="test" label="Test" {...context}>
       {({property, label, filter: {id, value}, setFilterValue, setPredicate}) => {
         return <div className="test-field-value">
           <span className="label">{label}</span>
@@ -48,12 +46,7 @@ describe('FilterValue should render', function () {
           </span>
         </div>
       }}
-    </FilterValue>
-  </Provider>, {
-    context: {
-      context: {...context, filter: context.getFilter('test')}
-    }
-  })
+    </FilterValue>)
 
   it('should render and set values', function () {
     const filterValue = filter.find(FilterValue).renderProp('children')({...context, filter: context.getFilter('test'), property: 'test', label: 'Test'})

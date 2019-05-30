@@ -1,7 +1,6 @@
 import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { Provider } from '../../field/context'
 import FilterText from '../text'
 import FilterValue from '../../value'
 import Input from '@salesforce/design-system-react/lib/components/input'
@@ -35,13 +34,7 @@ describe('FilterText', function () {
     hasProperty: () => {},
   }
 
-  const filter = mount(<Provider value={context}>
-    <FilterText property="test" label="Test" />
-  </Provider>, {
-    context: {
-      context: {...context, filter: context.getFilter('test')}
-    }
-  })
+  const filter = mount(<FilterText property="test" label="Test" {...context} />)
 
   it('Should have a default value of "default"', function () {
     const wrapper = filter.find(FilterValue)

@@ -1,7 +1,6 @@
 import React from 'react'
 import { mount, configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { Provider } from '../../field/context'
 import FilterList from '../list'
 import FilterValue from '../../value'
 import ComboBox from '@salesforce/design-system-react/lib/components/combobox'
@@ -36,13 +35,7 @@ describe('FilterList', function () {
   }
 
   it('Should have a default value of "default"', function () {
-    const filter = mount(<Provider value={context}>
-      <FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
-      }
-    })
+    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} {...context} />)
 
     const wrapper = filter.find(FilterValue)
     expect(wrapper).toHaveLength(1)
@@ -55,13 +48,7 @@ describe('FilterList', function () {
   })
 
   it('Should change single text value', function () {
-    const filter = mount(<Provider value={context}>
-      <FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
-      }
-    })
+    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={false} {...context} />)
 
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: filters.test})
@@ -79,8 +66,7 @@ describe('FilterList', function () {
   })
 
   it('Should change single object value', function () {
-    const filter = mount(<Provider value={context}>
-      <FilterList property="test" label="Test" options={[
+    const filter = mount(<FilterList property="test" label="Test" options={[
         {
           id: "default",
           value: "default",
@@ -91,12 +77,7 @@ describe('FilterList', function () {
           value: "changed",
           label: "Changed",
         }
-      ]} multiple={false} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filters.test}
-      }
-    })
+      ]} multiple={false} {...context} />)
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: {
         id: 'test',
@@ -118,13 +99,7 @@ describe('FilterList', function () {
 
   it('Should change multiple text value', function () {
     const filterValue = {...filters.test, value: ["default"]}
-    const filter = mount(<Provider value={context}>
-      <FilterList property="test" label="Test" options={["default", "changed"]} multiple={true} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filterValue}
-      }
-    })
+    const filter = mount(<FilterList property="test" label="Test" options={["default", "changed"]} multiple={true} {...context} />)
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
     const combo = rendered.find(ComboBox)
@@ -142,8 +117,7 @@ describe('FilterList', function () {
 
   it('Should change multiple object value', function () {
     const filterValue = {...filters.test, value: ["default"]}
-    const filter = mount(<Provider value={context}>
-      <FilterList property="test" label="Test" options={[
+    const filter = mount(<FilterList property="test" label="Test" options={[
         {
           id: "default",
           value: "default",
@@ -154,12 +128,7 @@ describe('FilterList', function () {
           value: "changed",
           label: "Changed",
         }
-      ]} multiple={true} />
-    </Provider>, {
-      context: {
-        context: {...context, filter: filterValue}
-      }
-    })
+      ]} multiple={true} {...context} />)
     const wrapper = filter.find(FilterValue)
     const rendered = wrapper.renderProp('children')({...context, filter: filterValue})
     const combo = rendered.find(ComboBox)
