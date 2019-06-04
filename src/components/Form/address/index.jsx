@@ -8,7 +8,7 @@ const Address = props => {
     name,
     required = false,
     containerClassName = '',
-    fieldClassName = 'slds-p-around-small',
+    fieldClassName = 'slds-p-around--small',
     streetFieldName = 'street',
     streetLabel = 'Street Address',
     cityFieldName = 'city',
