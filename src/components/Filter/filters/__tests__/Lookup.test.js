@@ -78,9 +78,9 @@ describe('FilterLookup', function () {
                                        {...context}
                                        filter={filters.test}
     />)
-    const combo = filter.find(ComboBox)
+    const combo = filter.find('SLDSCombobox')
 
-    combo.instance().instanceRef.setState({isOpen: true})
+    combo.instance().setState({isOpen: true})
     combo.update()
 
     const option = filter.find('span.slds-listbox__option')
@@ -111,7 +111,7 @@ describe('FilterLookup', function () {
         label: 'Changed',
       }
     ]} multiple={true} onFilterInput={onFilterInput} {...context} filter={filterValue}/>)
-    const combo = filter.find(ComboBox)
+    const combo = filter.find('SLDSCombobox')
     const input = combo.find('input')
     combo.setState({isOpen: false}).update()
 
@@ -146,9 +146,10 @@ describe('FilterLookup', function () {
                                        {...context}
                                        filter={filters.test}
     />)
-    const combo = filter.find(ComboBox)
+    const combo = filter.find('SLDSCombobox')
+    combo.setState({isOpen: false}).update()
 
-    combo.instance().instanceRef.handleInputChange({target: {value: 'test'}})
+    combo.prop('events').onChange({target: {value: 'test'}});
 
     await wait(10)
 
