@@ -23,6 +23,7 @@ const render = ({form, field}) => {
                     }
                   }}
                   onBlur={e => {
+                    console.log('Hello?');
                     onBlur(e, {form, field, value: e.target.value, error})
                     field.onBlur(e)
                   }}
