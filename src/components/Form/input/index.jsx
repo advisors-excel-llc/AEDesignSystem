@@ -45,6 +45,7 @@ Input.propTypes = {
 }
 
 Input.defaultProps = {
+  fastField: true,
   onChange: () => {},
   onBlur: () => {},
 }

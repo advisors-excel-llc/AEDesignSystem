@@ -34,8 +34,9 @@ describe('Input', function () {
     </Formik>)
 
     const input = form.find(Input).find('input')
-    input.simulate('change', {target: {value: ''}})
-    // Validation is async
+    input.simulate('change', {target: {value: '', name: 'test'}})
+    input.simulate('blur')
+    // Validation is async and fires on blur
     await wait(10)
     form.update()
 
@@ -68,7 +69,7 @@ describe('Input', function () {
 
     const input = form.find(Input).find('input')
 
-    input.simulate('change', {target: {value: '5551111212'}})
+    input.simulate('change', {target: {value: '5551111212', name: 'test'}})
 
     expect(getIn(form.state('values'), 'test')).toBe('5551111212')
     expect(form.find(Input).find(SLDSInput).prop('value')).toBe('(555) 111-1212')

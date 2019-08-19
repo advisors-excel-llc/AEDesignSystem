@@ -16,9 +16,12 @@ describe('DatePicker', function () {
     </Formik>)
 
     const input = form.find(DatePicker).find('input')
-    input.simulate('change', {target: {value: '05/22/2019'}})
+    input.simulate('change', {target: {value: '05/22/2019', name: 'test'}})
 
-    expect(getIn(form.state('values'), 'test')).toBe('2019-05-22T00:00:00-04:00')
+    const now = new Date();
+    const tzOffset = now.toString().match(/-\d{2}/g);
+
+    expect(getIn(form.state('values'), 'test')).toBe(`2019-05-22T00:00:00${tzOffset}:00`)
   })
 
   it('should show error text when invalid', async function () {
