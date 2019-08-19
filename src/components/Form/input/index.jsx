@@ -4,7 +4,7 @@ import { getIn, FastField, Field } from 'formik'
 import SFInput from '@salesforce/design-system-react/lib/components/input'
 import mask from './mask'
 
-const render = ({form, field}) => {
+const render = (props, {form, field}) => {
   const {name, value = ''} = field
   const touched = getIn(form.touched, name)
   const error = (touched || form.submitCount > 0) && getIn(form.errors, name)
@@ -23,7 +23,6 @@ const render = ({form, field}) => {
                     }
                   }}
                   onBlur={e => {
-                    console.log('Hello?');
                     onBlur(e, {form, field, value: e.target.value, error})
                     field.onBlur(e)
                   }}
@@ -32,12 +31,12 @@ const render = ({form, field}) => {
 };
 
 const Input = (props) => props.fastField
-  ? <FastField {...props}>
-  {render}
-</FastField>
-  : <Field>
-    {render}
-  </Field>
+  ? <FastField {...props}
+    render={(form) => render(props, form)}
+  />
+  : <Field {...props}
+    render={(form) => render(props, form)}
+  />
 
 Input.propTypes = {
   fastField : PropTypes.bool, //Choose between a field and a fast field.  See Formik docs for more.

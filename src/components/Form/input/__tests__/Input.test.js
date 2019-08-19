@@ -11,17 +11,17 @@ configure({adapter: new Adapter()})
 
 describe('Input', function () {
   it('Should update the form state', function () {
-    const form = mount(<Formik initialValues={{test: 'default'}}>
-      <Input name="test" required/>
+    const form = mount(<Formik initialValues={{test: '123'}}>
+      <Input name="test" modelMask="(000 " required/>
     </Formik>)
 
-    expect(getIn(form.state('values'), 'test')).toBe('default')
+    expect(getIn(form.state('values'), 'test')).toBe('123')
 
     const input = form.find(Input).find('input')
 
-    input.simulate('change', {target: {value: 'changed'}})
+    input.simulate('change', {target: {value: '321'}})
 
-    expect(getIn(form.state('values'), 'test')).toBe('changed')
+    expect(getIn(form.state('values'), 'test')).toBe('(321')
   })
 
   it('Should show error text when invalid', async function () {
@@ -72,5 +72,15 @@ describe('Input', function () {
 
     expect(getIn(form.state('values'), 'test')).toBe('5551111212')
     expect(form.find(Input).find(SLDSInput).prop('value')).toBe('(555) 111-1212')
+  })
+
+  it('Should run onBlur correctly', function () {
+    const onBlur = jest.fn()
+    const form = mount(<Formik initialValues={{test: 'default'}}>
+      <Input name="test" onBlur={onBlur} viewMask="(000) 000-0000" required/>
+    </Formik>)
+    const input = form.find(Input).find('input')
+    input.simulate('blur');
+    expect(onBlur).toHaveBeenCalledTimes(1);
   })
 })
