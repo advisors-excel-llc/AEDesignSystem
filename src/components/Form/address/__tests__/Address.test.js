@@ -12,9 +12,9 @@ describe('Address', function () {
       <Address name="test"/>
     </Formik>)
 
-    form.find('div.test-street input').simulate('change', {target: {value: 'Test Street'}})
-    form.find('div.test-city input').simulate('change', {target: {value: 'Testville'}})
-    form.find('div.test-postalCode input').simulate('change', {target: {value: '11122'}})
+    form.find('div.test-street input').simulate('change', {target: {value: 'Test Street', name: 'test.street'}})
+    form.find('div.test-city input').simulate('change', {target: {value: 'Testville', name: 'test.city'}})
+    form.find('div.test-postalCode input').simulate('change', {target: {value: '11122', name: 'test.postalCode'}})
 
     form.find('div.test-state input').simulate('click')
     form.find('div.test-state span.slds-listbox__option').at(0).simulate('click')
@@ -41,9 +41,9 @@ describe('Address', function () {
       />
     </Formik>)
 
-    form.find('div.test-billingStreet input').simulate('change', {target: {value: 'Test Street'}})
-    form.find('div.test-billingCity input').simulate('change', {target: {value: 'Testville'}})
-    form.find('div.test-billingPostalCode input').simulate('change', {target: {value: '11122'}})
+    form.find('div.test-billingStreet input').simulate('change', {target: {value: 'Test Street', name: 'test.billingStreet'}})
+    form.find('div.test-billingCity input').simulate('change', {target: {value: 'Testville', name: 'test.billingCity'}})
+    form.find('div.test-billingPostalCode input').simulate('change', {target: {value: '11122', name: 'test.billingPostalCode'}})
 
     form.find('div.test-billingState input').simulate('click')
     form.find('div.test-billingState span.slds-listbox__option').at(0).simulate('click')
