@@ -6,6 +6,7 @@ import * as Yup from 'yup'
 import Input from '../'
 import SLDSInput from '@salesforce/design-system-react/lib/components/input'
 import {wait} from '../../../../__tests__/util'
+import sinon from 'sinon'
 
 configure({adapter: new Adapter()})
 
@@ -76,12 +77,29 @@ describe('Input', function () {
   })
 
   it('Should run onBlur correctly', function () {
-    const onBlur = jest.fn()
-    const form = mount(<Formik initialValues={{test: 'default'}}>
+    const onBlur = sinon.spy();
+    const onValidate = sinon.spy();
+    const form = mount(<Formik initialValues={{test: 'default'}} validate={onValidate} validateOnBlur={true}>
       <Input name="test" onBlur={onBlur} viewMask="(000) 000-0000" required/>
     </Formik>)
     const input = form.find(Input).find('input')
     input.simulate('blur');
-    expect(onBlur).toHaveBeenCalledTimes(1);
+    expect(onBlur.callCount).toBe(1);
+    expect(onValidate.callCount).toBe(1);
+  })
+
+  it('Should stop onBlur propagation', function () {
+    const onBlur = sinon.spy();
+    const onValidate = sinon.spy();
+    const form = mount(<Formik initialValues={{test: 'default'}} validate={onValidate} validateOnBlur={true}>
+      <Input name="test" onBlur={e => {
+        e.stopPropagation();
+        onBlur(e)
+      }} viewMask="(000) 000-0000" required/>
+    </Formik>)
+    const input = form.find(Input).find('input')
+    input.simulate('blur');
+    expect(onBlur.callCount).toBe(1);
+    expect(onValidate.callCount).toBe(0);
   })
 })
