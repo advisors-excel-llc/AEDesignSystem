@@ -24,7 +24,9 @@ const render = (props, {form, field}) => {
                   }}
                   onBlur={e => {
                     onBlur(e, {form, field, value: e.target.value, error})
-                    field.onBlur(e)
+                    if (!e.isPropagationStopped()) {
+                      field.onBlur(e)
+                    }
                   }}
                   value={compValue}
   />
